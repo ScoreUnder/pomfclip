@@ -15,7 +15,7 @@ for f in "$@"; do
     else
         pomf_id=$(node -pe "JSON.parse(process.argv[1]).files[0].url" "$pomf_reply")
         if [ $? != 0 ]; then
-            echo "Failed to parse uploader response from $f" >&2
+            echo "Failed to parse uploader response to $f" >&2
             printf "Response:\n%s\n" "$pomf_reply" >&2
             result=1
         fi

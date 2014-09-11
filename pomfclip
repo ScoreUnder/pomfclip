@@ -19,7 +19,16 @@ log() {
 }
 
 if command -v scrot >/dev/null 2>&1; then
-    scrot -s "$file"
+    i=0
+    while [ $i -lt 10 ]; do
+        out=$(scrot -s "$file" 2>&1)
+        # Workaround for scrot stupidness: if it fails because the pointer is "temporarily unavailable", sleep then retry
+        [ $? != 0 ] && case "$out" in
+            *"Resource temporarily unavailable"*) sleep 0.1;;
+            *) break;;
+        esac
+        i=$((i+1))
+    done
 elif command -v gnome-screenshot >/dev/null 2>&1; then
     gnome-screenshot -a -f "$file"
 else
@@ -47,7 +56,13 @@ if [ -z "${url%*pomf.se/}" ]; then
     exit
 fi
 
-printf %s "$url" | xclip -i -sel clipboard
-printf %s "$url" | xclip -i -sel primary
+echo "$url"
 
-log information "Uploaded screenshot! The URL is in your clipboard."
+if
+    printf %s "$url" | xclip -i -sel clipboard -silent
+    printf %s "$url" | xclip -i -sel primary -silent
+then
+    log information "Uploaded screenshot at $url! The URL is in your clipboard."
+else
+    log information "Uploaded screenshot at $url!"
+fi
