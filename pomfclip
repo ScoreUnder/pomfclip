@@ -1,0 +1,53 @@
+#!/bin/sh
+
+file=$(mktemp --tmpdir pomfXXXXXXXX.png)
+
+cleanup() {
+    code=$?
+    rm "$file"
+    trap - EXIT INT HUP QUIT TERM
+    exit $code
+}
+trap cleanup EXIT INT HUP QUIT TERM
+
+log() {
+    local level
+    level="$1"
+    shift
+    echo >&2 "$@"
+    notify-send -i dialog-"$level" "Pomf!" "$*"
+}
+
+if command -v scrot >/dev/null 2>&1; then
+    scrot -s "$file"
+elif command -v gnome-screenshot >/dev/null 2>&1; then
+    gnome-screenshot -a -f "$file"
+else
+    log error "No screenshot software?"
+    exit
+fi
+
+result=$?
+if [ $result != 0 -a $result != 2 ]; then
+    log error "Failed to take a screenshot"
+    exit
+fi
+
+if [ ! -s "$file" ]; then
+    log warning "Did not take a screenshot"
+    exit
+fi
+
+optipng -o9 "$file"
+
+url=$(pomfload "$file")
+
+if [ -z "${url%*pomf.se/}" ]; then
+    log warning "Failed to upload screenshot"
+    exit
+fi
+
+printf %s "$url" | xclip -i -sel clipboard
+printf %s "$url" | xclip -i -sel primary
+
+log information "Uploaded screenshot! The URL is in your clipboard."
