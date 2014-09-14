@@ -23,6 +23,10 @@ if flock -n 4; then
         notify-send -i dialog-"$level" "Pomf!" "$*"
     }
 
+    die() {
+        log "$@" & exit 1
+    }
+
     if command -v scrot >/dev/null 2>&1; then
         i=0
         while [ $i -lt 10 ]; do
@@ -37,29 +41,17 @@ if flock -n 4; then
     elif command -v gnome-screenshot >/dev/null 2>&1; then
         gnome-screenshot -a -f "$file"
     else
-        log error "No screenshot software?"
-        exit
+        die error "No screenshot software?"
     fi
 
-    result=$?
-    if [ $result != 0 -a $result != 2 ]; then
-        log error "Failed to take a screenshot"
-        exit
-    fi
-
-    if [ ! -s "$file" ]; then
-        log warning "Did not take a screenshot"
-        exit
-    fi
+    [ $? != 0 -a $? != 2 ] && die error "Failed to take a screenshot"
+    [ ! -s "$file" ] && die warning "Did not take a screenshot"
 
     optipng -o9 "$file"
 
     url=$(pomfload "$file")
 
-    if [ -z "${url%*pomf.se/}" ]; then
-        log warning "Failed to upload screenshot"
-        exit
-    fi
+    [ -z "${url%*pomf.se/}" ] && die warning "Failed to upload screenshot"
 
     echo "$url"
 
