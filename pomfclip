@@ -1,68 +1,74 @@
 #!/bin/sh
 
-file=$(mktemp --tmpdir pomfXXXXXXXX.png)
+lock="/tmp/pomfclip-$DISPLAY"
+exec 4>"$lock"
+if flock -n 4; then
+    file=$(mktemp --tmpdir pomfXXXXXXXX.png)
 
-cleanup() {
-    code=$?
-    rm "$file"
-    trap - EXIT INT HUP QUIT TERM
-    exit $code
-}
-trap cleanup EXIT INT HUP QUIT TERM
+    cleanup() {
+        code=$?
+        rm "$file"
+        exec 4>&-
+        rm "$lock"
+        trap - EXIT INT HUP QUIT TERM
+        exit $code
+    }
+    trap cleanup EXIT INT HUP QUIT TERM
 
-log() {
-    local level
-    level="$1"
-    shift
-    echo >&2 "$@"
-    notify-send -i dialog-"$level" "Pomf!" "$*"
-}
+    log() {
+        local level
+        level="$1"
+        shift
+        echo >&2 "$@"
+        notify-send -i dialog-"$level" "Pomf!" "$*"
+    }
 
-if command -v scrot >/dev/null 2>&1; then
-    i=0
-    while [ $i -lt 10 ]; do
-        out=$(scrot -s "$file" 2>&1)
-        # Workaround for scrot stupidness: if it fails because the pointer is "temporarily unavailable", sleep then retry
-        [ $? != 0 ] && case "$out" in
-            *"Resource temporarily unavailable"*) sleep 0.1;;
-            *) break;;
-        esac
-        i=$((i+1))
-    done
-elif command -v gnome-screenshot >/dev/null 2>&1; then
-    gnome-screenshot -a -f "$file"
-else
-    log error "No screenshot software?"
-    exit
-fi
+    if command -v scrot >/dev/null 2>&1; then
+        i=0
+        while [ $i -lt 10 ]; do
+            out=$(scrot -s "$file" 2>&1)
+            # Workaround for scrot stupidness: if it fails because the pointer is "temporarily unavailable", sleep then retry
+            [ $? = 0 ] && break || case "$out" in
+                *"Resource temporarily unavailable"*) sleep 0.1;;
+                *) break;;
+            esac
+            i=$((i+1))
+        done
+    elif command -v gnome-screenshot >/dev/null 2>&1; then
+        gnome-screenshot -a -f "$file"
+    else
+        log error "No screenshot software?"
+        exit
+    fi
 
-result=$?
-if [ $result != 0 -a $result != 2 ]; then
-    log error "Failed to take a screenshot"
-    exit
-fi
+    result=$?
+    if [ $result != 0 -a $result != 2 ]; then
+        log error "Failed to take a screenshot"
+        exit
+    fi
 
-if [ ! -s "$file" ]; then
-    log warning "Did not take a screenshot"
-    exit
-fi
+    if [ ! -s "$file" ]; then
+        log warning "Did not take a screenshot"
+        exit
+    fi
 
-optipng -o9 "$file"
+    optipng -o9 "$file"
 
-url=$(pomfload "$file")
+    url=$(pomfload "$file")
 
-if [ -z "${url%*pomf.se/}" ]; then
-    log warning "Failed to upload screenshot"
-    exit
-fi
+    if [ -z "${url%*pomf.se/}" ]; then
+        log warning "Failed to upload screenshot"
+        exit
+    fi
 
-echo "$url"
+    echo "$url"
 
-if
-    printf %s "$url" | xclip -i -sel clipboard -silent
-    printf %s "$url" | xclip -i -sel primary -silent
-then
-    log information "Uploaded screenshot at $url! The URL is in your clipboard."
-else
-    log information "Uploaded screenshot at $url!"
+    if
+        printf %s "$url" | xclip -i -sel clipboard -silent
+        printf %s "$url" | xclip -i -sel primary -silent
+    then
+        log information "Uploaded screenshot at $url! The URL is in your clipboard."
+    else
+        log information "Uploaded screenshot at $url!"
+    fi
 fi
