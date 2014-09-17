@@ -3,17 +3,17 @@
 lock="/tmp/pomfclip-$DISPLAY"
 exec 4>"$lock"
 if flock -n 4; then
-    file=$(mktemp --tmpdir pomfXXXXXXXX.png)
-
+    file=""
     cleanup() {
         code=$?
-        rm "$file"
-        exec 4>&-
+        [ -n "$file" ] && rm "$file"
         rm "$lock"
         trap - EXIT INT HUP QUIT TERM
         exit $code
     }
     trap cleanup EXIT INT HUP QUIT TERM
+
+    file=$(mktemp --tmpdir pomfXXXXXXXX.png)
 
     log() {
         local level
