@@ -49,9 +49,7 @@ if flock -n 4; then
 
     optipng -o9 "$file"
 
-    url=$(pomfload "$file")
-
-    [ -z "${url%*pomf.se/}" ] && die warning "Failed to upload screenshot"
+    url=$(pomfload "$file") || die warning "Failed to upload screenshot"
 
     echo "$url"
 
