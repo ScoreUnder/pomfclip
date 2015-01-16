@@ -1,13 +1,13 @@
 #!/bin/sh
 # Requires node.js: sudo pacman -Sy nodejs
 
-if [ $# -lt 1 ]; then
+if [ "$#" -lt 1 ]; then
     echo "Usage: $(basename "$0") FILE [FILE...]" >&2
     exit 1
 fi
 
 result=0
-for f in "$@"; do
+for f do
     if ! pomf_reply="$(curl -sS --progress-bar -F "files[]=@$f" http://pomf.se/upload.php)"; then
         echo "Failed to upload $f" >&2
         result=1
@@ -18,11 +18,12 @@ for f in "$@"; do
             result=1
         fi
 
-        if [ $# -gt 1 ]; then
+        if [ "$#" -gt 1 ]; then
             printf "%s: " "$f"
         fi
 
         echo "http://a.pomf.se/$pomf_id"
+        printf '%s\t%s\t%s\n' "$(date --rfc-3339=seconds)" "http://a.pomf.se/$pomf_id" "$f" >> ~/.pomf_history
     fi
 done
-exit $result
+exit "$result"

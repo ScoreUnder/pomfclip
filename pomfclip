@@ -9,7 +9,7 @@ if flock -n 4; then
         [ -n "$file" ] && rm "$file"
         rm "$lock"
         trap - EXIT INT HUP QUIT TERM
-        exit $code
+        exit "$code"
     }
     trap cleanup EXIT INT HUP QUIT TERM
 
