@@ -47,7 +47,7 @@ if flock -n 4; then
     [ $? != 0 -a $? != 2 ] && die error "Failed to take a screenshot"
     [ ! -s "$file" ] && die warning "Did not take a screenshot"
 
-    optipng -o9 "$file"
+    optipng "$file"
 
     url=$(pomfload "$file") || die warning "Failed to upload screenshot"
 
