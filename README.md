@@ -14,7 +14,7 @@ Based on pomfload:
 Requirements
 ------------
 
-* scrot OR gnome-screenshot to take a screenshot
+* scrot OR shutter OR gnome-screenshot to take a screenshot
 * node.js for json parsing
 * (optional) xclip to copy the URL to the clipboard
 * (optional) optipng to compress the screenshot
