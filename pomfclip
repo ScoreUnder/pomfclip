@@ -29,6 +29,10 @@ if flock -n 4; then
 
     if [ -n "$SCREENSHOT_TOOL" ]; then
         "$SCREENSHOT_TOOL" "$file"
+    elif command -v shutter >/dev/null 2>&1; then
+        shutter -e -s -o "$file"
+    elif command -v gnome-screenshot >/dev/null 2>&1; then
+        gnome-screenshot -a -f "$file"
     elif command -v scrot >/dev/null 2>&1; then
         i=0
         while [ $i -lt 10 ]; do
@@ -40,10 +44,8 @@ if flock -n 4; then
             esac
             i=$((i+1))
         done
-    elif command -v shutter >/dev/null 2>&1; then
-        shutter -e -s -o "$file"
-    elif command -v gnome-screenshot >/dev/null 2>&1; then
-        gnome-screenshot -a -f "$file"
+    elif command -v import >/dev/null 2>&1; then
+        import "$file"
     else
         die error "No screenshot software?"
     fi

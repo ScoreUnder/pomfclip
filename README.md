@@ -14,7 +14,8 @@ Based on pomfload:
 Requirements
 ------------
 
-* scrot OR shutter OR gnome-screenshot to take a screenshot
+* A screenshot tool (scrot, shutter, etc.)
+  * Bear in mind that scrot and imagemagick often leave artifacts on the resultant images
 * node.js for json parsing
 * (optional) xclip to copy the URL to the clipboard
 * (optional) optipng to compress the screenshot
