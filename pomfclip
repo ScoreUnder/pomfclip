@@ -20,11 +20,11 @@ if flock -n 4; then
         level="$1"
         shift
         echo >&2 "$@"
-        notify-send -i dialog-"$level" "Pomf!" "$*"
+        notify-send -i dialog-"$level" "Pomf!" "$*" &
     }
 
     die() {
-        log "$@" & exit 1
+        log "$@"; exit 1
     }
 
     if command -v scrot >/dev/null 2>&1; then
