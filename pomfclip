@@ -60,8 +60,8 @@ if flock -n 4; then
     echo "$url"
 
     if
-        printf %s "$url" | xclip -i -sel clipboard -silent
-        printf %s "$url" | xclip -i -sel primary -silent
+        printf %s "$url" | xsel -ib
+        printf %s "$url" | xsel -ip
     then
         log information "Uploaded screenshot at $url! The URL is in your clipboard."
     else
