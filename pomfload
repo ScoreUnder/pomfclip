@@ -1,5 +1,5 @@
 #!/bin/sh
-# Requires node.js: sudo pacman -Sy nodejs
+# Requires jq (https://stedolan.github.io/jq): sudo pacman -S jq
 
 if [ "$#" -lt 1 ]; then
     echo "Usage: $(basename "$0") FILE [FILE...]" >&2
@@ -12,7 +12,7 @@ for f do
         echo "Failed to upload $f" >&2
         result=1
     else
-        if ! pomf_id=$(node -pe "JSON.parse(process.argv[1]).files[0].url" "$pomf_reply"); then
+        if ! pomf_id=$(printf %s\\n "$pomf_reply" | jq -r '.files[0].url'); then
             echo "Failed to parse uploader response to $f" >&2
             printf "Response:\n%s\n" "$pomf_reply" >&2
             result=1
