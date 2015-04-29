@@ -1,5 +1,13 @@
 #!/bin/sh
 
+if [ "$1" = --uguu ]; then
+    upload=uguuload
+    title='Uguu~'
+else
+    upload=pomfload
+    title='Pomf!'
+fi
+
 lock="/tmp/pomfclip-$DISPLAY"
 exec 4>"$lock"
 if flock -n 4; then
@@ -23,7 +31,7 @@ if flock -n 4; then
         level="$1"
         shift
         echo >&2 "$@"
-        notify-send -i dialog-"$level" "Pomf!" "$*" &
+        notify-send -i dialog-"$level" "$title" "$*" &
     }
 
     die() {
@@ -58,7 +66,7 @@ if flock -n 4; then
 
     optipng "$file"
 
-    url=$(pomfload "$file" 2>$errorfile) || die warning "Failed to upload screenshot.$(echo;cat "$errorfile")"
+    url=$("$upload" "$file" 2>$errorfile) || die warning "Failed to upload screenshot.$(echo;cat "$errorfile")"
 
     echo "$url"
 

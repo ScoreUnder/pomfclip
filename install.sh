@@ -17,7 +17,7 @@ try_path() {
 try_path /usr/local/bin || try_path "$HOME/bin" || try_path "$HOME/.bin"
 
 if [ -n "$install_to" -a -d "$install_to" ]; then
-    install -v -t "$install_to" pomfclip pomfload
+    install -v -t "$install_to" pomfclip pomfload uguuload
 else
     echo "Nowhere to install to!" >&2
 fi
