@@ -10,7 +10,7 @@ newline='
 
 result=0
 for f do
-    if ! pomf_reply="$(curl -sS --progress-bar -F "files[]=@$f" http://pomf.se/upload.php)"; then
+    if ! pomf_reply="$(curl -sS --progress-bar -F "files[]=@$f" https://pomf.se/upload.php)"; then
         echo "Failed to upload $f" >&2
         result=1
     else
@@ -36,7 +36,7 @@ for f do
             printf "%s: " "$f"
         fi
 
-        url=http://a.pomf.se/$pomf_id
+        url=https://a.pomf.se/$pomf_id
         echo "$url"
         printf '%s\t%s\t%s\n' "$(date --rfc-3339=seconds)" "$url" "$f" >> ~/.pomf_history
     fi
