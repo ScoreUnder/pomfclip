@@ -32,9 +32,7 @@ for f do
             continue
         fi
 
-        if [ "$#" -gt 1 ]; then
-            printf "%s: " "$f"
-        fi
+        [ "$#" -gt 1 ] && printf "%s: " "$f"
 
         url=https://a.pomf.se/$pomf_id
         echo "$url"
