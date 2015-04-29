@@ -1,12 +1,19 @@
 #!/bin/sh
 
-if [ "$1" = --uguu ]; then
-    upload=uguuload
-    title='Uguu~'
-else
-    upload=pomfload
-    title='Pomf!'
-fi
+upload=pomfload
+title='Pomf!'
+
+for arg do case $arg in
+    --uguu)
+        upload=uguuload
+        title='Uguu~'
+        ;;
+    *)
+        echo "Unknown argument passed to $(basename -- "$0")." >&2
+        echo "Try --uguu, or nothing." >&2
+        exit 1
+        ;;
+esac; done
 
 lock="/tmp/pomfclip-$DISPLAY"
 exec 4>"$lock"
