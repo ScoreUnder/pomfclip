@@ -4,16 +4,19 @@ lock="/tmp/pomfclip-$DISPLAY"
 exec 4>"$lock"
 if flock -n 4; then
     file=""
+    errorfile=""
     cleanup() {
         code=$?
-        [ -n "$file" ] && rm "$file"
-        rm "$lock"
+        [ -n "$file" ] && rm -f -- "$file"
+        [ -n "$errorfile" ] && rm -f -- "$errorfile"
+        rm -f -- "$lock"
         trap - EXIT INT HUP QUIT TERM
         exit "$code"
     }
     trap cleanup EXIT INT HUP QUIT TERM
 
     file=$(mktemp --tmpdir pomfXXXXXXXX.png)
+    errorfile=$(mktemp --tmpdir pomfXXXXXXXX.log)
 
     log() {
         local level
@@ -55,7 +58,7 @@ if flock -n 4; then
 
     optipng "$file"
 
-    url=$(pomfload "$file") || die warning "Failed to upload screenshot"
+    url=$(pomfload "$file" 2>$errorfile) || die warning "Failed to upload screenshot.$(echo;cat "$errorfile")"
 
     echo "$url"
 
