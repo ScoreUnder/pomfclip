@@ -16,7 +16,7 @@ Requirements
 
 * A screenshot tool (scrot, shutter, etc.)
   * Bear in mind that scrot and imagemagick often leave artifacts on the resultant images
-* node.js for json parsing
+* jq for json parsing
 * (optional) xsel to copy the URL to the clipboard
 * (optional) optipng to compress the screenshot
 * (optional) something to keybind the script with
