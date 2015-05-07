@@ -75,7 +75,7 @@ if flock -n 4; then
 
     url=$("$upload" "$file" 2>$errorfile) || die warning "Failed to upload screenshot.$(echo;cat "$errorfile")"
 
-    echo "$url"
+    printf %s\\n "$url"
 
     if
         printf %s "$url" | xsel -ib
