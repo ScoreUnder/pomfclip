@@ -29,6 +29,46 @@ detect_cancelled_selection() {
     esac
 }
 
+log() {
+    local level
+    level="$1"
+    shift
+    echo >&2 "$@"
+    notify-send -i dialog-"$level" "$title" "$*" &
+}
+
+die() {
+    log "$@"; exit 1
+}
+
+take_screenshot() {
+    if [ -n "$SCREENSHOT_TOOL" ]; then
+        detect_cancelled_selection retry_if_temporary_fail "$SCREENSHOT_TOOL" "$1"
+    elif command -v maim >/dev/null 2>&1 &&
+         command -v slop >/dev/null 2>&1; then
+        detect_cancelled_selection retry_if_temporary_fail maim -slc 1,0,0,0.2 --hidecursor "$1"
+    elif command -v shutter >/dev/null 2>&1; then
+        shutter -e -s -o "$1"
+    elif command -v gnome-screenshot >/dev/null 2>&1; then
+        retry_if_temporary_fail gnome-screenshot -a -f "$1"
+    elif command -v scrot >/dev/null 2>&1; then
+        retry_if_temporary_fail scrot -s "$1"
+    elif command -v import >/dev/null 2>&1; then
+        retry_if_temporary_fail import "$1"
+    else
+        die error "No screenshot software?"
+    fi
+
+    [ $? != 0 -a $? != 2 ] && die error "Failed to take a screenshot"
+    [ ! -s "$1" ] && die warning "Did not take a screenshot"
+}
+
+take_lock() {
+    lock="/tmp/pomfclip-$DISPLAY"
+    exec 4>"$lock"
+    flock -n 4
+}
+
 upload=pomfload
 title='Pomf!'
 
@@ -44,9 +84,7 @@ for arg do case $arg in
         ;;
 esac; done
 
-lock="/tmp/pomfclip-$DISPLAY"
-exec 4>"$lock"
-if flock -n 4; then
+if take_lock; then
     file=""
     errorfile=""
     cleanup() {
@@ -62,38 +100,7 @@ if flock -n 4; then
     file=$(mktemp --tmpdir pomfXXXXXXXX.png)
     errorfile=$(mktemp --tmpdir pomfXXXXXXXX.log)
 
-    log() {
-        local level
-        level="$1"
-        shift
-        echo >&2 "$@"
-        notify-send -i dialog-"$level" "$title" "$*" &
-    }
-
-    die() {
-        log "$@"; exit 1
-    }
-
-    if [ -n "$SCREENSHOT_TOOL" ]; then
-        detect_cancelled_selection retry_if_temporary_fail "$SCREENSHOT_TOOL" "$file"
-    elif command -v maim >/dev/null 2>&1 &&
-         command -v slop >/dev/null 2>&1; then
-        detect_cancelled_selection retry_if_temporary_fail maim -slc 1,0,0,0.2 --hidecursor "$file"
-    elif command -v shutter >/dev/null 2>&1; then
-        shutter -e -s -o "$file"
-    elif command -v gnome-screenshot >/dev/null 2>&1; then
-        retry_if_temporary_fail gnome-screenshot -a -f "$file"
-    elif command -v scrot >/dev/null 2>&1; then
-        retry_if_temporary_fail scrot -s "$file"
-    elif command -v import >/dev/null 2>&1; then
-        retry_if_temporary_fail import "$file"
-    else
-        die error "No screenshot software?"
-    fi
-
-    [ $? != 0 -a $? != 2 ] && die error "Failed to take a screenshot"
-    [ ! -s "$file" ] && die warning "Did not take a screenshot"
-
+    take_screenshot "$file"
     optipng "$file"
 
     url=$("$upload" "$file" 2>$errorfile) || die warning "Failed to upload screenshot.$(echo;cat "$errorfile")"
