@@ -1,5 +1,34 @@
 #!/bin/sh
 
+retry_if_temporary_fail() {
+    # Workaround for stupidness in scrot, maim, import and possibly other tools.
+    local out res
+    i=0
+    while [ $i -lt 10 ]; do
+        out=$("$@" 2>&1)
+        res=$?
+        [ "$res" = 0 ] && break || case $out in
+            *"Resource temporarily unavailable"*|*"Failed to grab X cursor"*) sleep 0.1;;
+            *) break;;
+        esac
+        i=$((i+1))
+    done
+    printf %s\\n "$out" >&2
+    return "$res"
+}
+
+detect_cancelled_selection() {
+    # Returns 2 on cancelled selection, consistent with scrot
+    # This is to stop it falsely reporting an error when maim fails because the user cancelled it.
+    out=$("$@" 2>&1)
+    res=$?
+    printf %s\\n "$out" >&2
+    case $out in
+        *"Canceled selection."*) return 2;;
+        *) return "$res"
+    esac
+}
+
 upload=pomfload
 title='Pomf!'
 
@@ -46,24 +75,18 @@ if flock -n 4; then
     }
 
     if [ -n "$SCREENSHOT_TOOL" ]; then
-        "$SCREENSHOT_TOOL" "$file"
+        detect_cancelled_selection retry_if_temporary_fail "$SCREENSHOT_TOOL" "$file"
+    elif command -v maim >/dev/null 2>&1 &&
+         command -v slop >/dev/null 2>&1; then
+        detect_cancelled_selection retry_if_temporary_fail maim -slc 1,0,0,0.2 --hidecursor "$file"
     elif command -v shutter >/dev/null 2>&1; then
         shutter -e -s -o "$file"
     elif command -v gnome-screenshot >/dev/null 2>&1; then
-        gnome-screenshot -a -f "$file"
+        retry_if_temporary_fail gnome-screenshot -a -f "$file"
     elif command -v scrot >/dev/null 2>&1; then
-        i=0
-        while [ $i -lt 10 ]; do
-            out=$(scrot -s "$file" 2>&1)
-            # Workaround for scrot stupidness: if it fails because the pointer is "temporarily unavailable", sleep then retry
-            [ $? = 0 ] && break || case "$out" in
-                *"Resource temporarily unavailable"*) sleep 0.1;;
-                *) break;;
-            esac
-            i=$((i+1))
-        done
+        retry_if_temporary_fail scrot -s "$file"
     elif command -v import >/dev/null 2>&1; then
-        import "$file"
+        retry_if_temporary_fail import "$file"
     else
         die error "No screenshot software?"
     fi
