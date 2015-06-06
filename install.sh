@@ -22,4 +22,5 @@ if [ -n "$install_to" -a -d "$install_to" ]; then
     install -v -t "$install_to" pomfclip pomfload uguuload
 else
     echo "Nowhere to install to!" >&2
+    exit 1
 fi
