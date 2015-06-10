@@ -11,6 +11,15 @@ Based on pomfload:
 * https://gist.github.com/ctgrl/9036808 (ctgrl's update)
 * https://gist.github.com/ScoreUnder/eb51d699cc908b789df9 (my "what is jq" version)
 
+Upload services
+---------------
+
+This tool can upload to these services, so far:
+
+* pomf.se (RIP)
+* uguu.se
+* loveisover.me
+
 Requirements
 ------------
 
