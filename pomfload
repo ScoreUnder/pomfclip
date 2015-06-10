@@ -1,16 +1,28 @@
 #!/bin/sh
 # Requires jq (https://stedolan.github.io/jq): sudo pacman -S jq
 if [ "$#" -lt 1 ]; then
-    echo "Usage: $(basename -- "$0") FILE [FILE...]" >&2
+    echo "Usage: $(basename -- "$0") [--upload upload-url] [--download download-url-prefix] FILE [FILE...]" >&2
     exit 1
 fi
+
+upload_url=https://pomf.se/upload.php
+download_url=https://a.pomf.se/
+
+eval "set -- $(getopt -n "$0" -o u:d: -l upload:,download: -- "$@")"
+while [ "$#" != 0 ]; do
+    case $1 in
+        --download|-d) download_url=$2; shift;;
+        --upload|-u) upload_url=$2; shift;;
+        --) break;;
+    esac; shift
+done; shift
 
 newline='
 '
 
 result=0
 for f do
-    if ! pomf_reply="$(curl -sS --progress-bar -F "files[]=@$f" https://pomf.se/upload.php)"; then
+    if ! pomf_reply="$(curl -sS --progress-bar -F "files[]=@$f" -- "$upload_url")"; then
         echo "Failed to upload $f" >&2
         result=1
     else
@@ -34,7 +46,7 @@ for f do
 
         [ "$#" -gt 1 ] && printf "%s: " "$f"
 
-        url=https://a.pomf.se/$pomf_id
+        url=$download_url$pomf_id
         echo "$url"
         printf '%s\t%s\t%s\n' "$(date --rfc-3339=seconds)" "$url" "$f" >> ~/.pomf_history
     fi

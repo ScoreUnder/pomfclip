@@ -77,9 +77,13 @@ for arg do case $arg in
         upload=uguuload
         title='Uguu~'
         ;;
+    --love)
+        upload='pomfload --upload https://img.loveisover.me/upload.php --download http://a.loveisover.me/'
+        title='Love is over!'
+        ;;
     *)
         echo "Unknown argument passed to $(basename -- "$0")." >&2
-        echo "Try --uguu, or nothing." >&2
+        echo "Try --uguu, --love, or nothing." >&2
         exit 1
         ;;
 esac; done
@@ -103,7 +107,7 @@ if take_lock; then
     take_screenshot "$file"
     optipng "$file"
 
-    url=$("$upload" "$file" 2>$errorfile) || die warning "Failed to upload screenshot.$(echo;cat "$errorfile")"
+    url=$(eval "$upload \"\$file\"" 2>$errorfile) || die warning "Failed to upload screenshot.$(echo;cat "$errorfile")"
 
     printf %s\\n "$url"
 
