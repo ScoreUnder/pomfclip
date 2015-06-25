@@ -81,6 +81,10 @@ for arg do case $arg in
         upload='pomfload --upload https://img.loveisover.me/upload.php --download http://a.loveisover.me/'
         title='Love is over!'
         ;;
+    --0x0)
+        upload='uguuload --upload https://0x0.st'
+        title='The Null Pointer'
+        ;;
     *)
         echo "Unknown argument passed to $(basename -- "$0")." >&2
         echo "Try --uguu, --love, or nothing." >&2
