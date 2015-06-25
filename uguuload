@@ -1,8 +1,9 @@
 #!/bin/sh
-if [ "$#" -lt 1 ]; then
-    echo "Usage: $(basename -- "$0") FILE [FILE...]" >&2
-    exit 1
-fi
+usage() {
+    echo "Usage: $(basename -- "$0") [--upload URL] [--[no-]progress] [--] FILE [FILE...]" >&2
+}
+
+upload_url='http://uguu.se/api.php?d=upload'
 
 if tty > /dev/null; then
     show_progress=--progress-bar
@@ -10,9 +11,22 @@ else
     show_progress=
 fi
 
+eval "set -- $(getopt -n "$0" -o u:pn -l upload:,progress,no-progress -- "$@")"
+while [ "$#" != 0 ]; do
+    case $1 in
+        --upload|-u)      upload_url=$2; shift;;
+        --progress|-p)    show_progress=--progress-bar;;
+        --no-progress|-n) show_progress=;;
+        --) break;;
+        *) usage; exit 1;;
+    esac; shift
+done; shift
+
+if [ "$#" -lt 1 ]; then usage; exit 1; fi
+
 result=0
 for f do
-    if ! url="$(curl -sS $show_progress -F randomname=yes -F "file=@$f" 'http://uguu.se/api.php?d=upload')"; then
+    if ! url="$(curl -sS $show_progress -F randomname=yes -F "file=@$f" "$upload_url")"; then
         echo "Failed to upload $f" >&2
         printf %s\\n "$url" >&2 # Maybe it contains some error message now?
         result=1
