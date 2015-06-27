@@ -87,7 +87,7 @@ for arg do case $arg in
         ;;
     *)
         echo "Unknown argument passed to $(basename -- "$0")." >&2
-        echo "Try --uguu, --love, or nothing." >&2
+        echo "Try --uguu, --love, --0x0, or nothing." >&2
         exit 1
         ;;
 esac; done
