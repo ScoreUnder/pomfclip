@@ -3,7 +3,7 @@ usage() {
     echo "Usage: $(basename -- "$0") [--upload URL] [--[no-]progress] [--] FILE [FILE...]" >&2
 }
 
-upload_url='http://uguu.se/api.php?d=upload'
+upload_url='http://uguu.se/api.php?d=upload-tool'
 
 if tty > /dev/null; then
     show_progress=--progress-bar
