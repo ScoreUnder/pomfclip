@@ -33,7 +33,7 @@ log() {
     local level
     level="$1"
     shift
-    echo >&2 "$@"
+    printf >&2 %s\\n "$*"
     notify-send -i dialog-"$level" "$title" "$*" &
 }
 
@@ -99,7 +99,7 @@ if take_lock; then
     take_screenshot "$file"
     optipng "$file"
 
-    url=$(upload "$service" "$file" 2>$errorfile) || die warning "Failed to upload screenshot.$(echo;cat "$errorfile")"
+    url=$(upload "$service" "$file" 2>"$errorfile") || die warning "Failed to upload screenshot.$(echo;cat -- "$errorfile")"
 
     printf %s\\n "$url"
 
