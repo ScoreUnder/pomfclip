@@ -19,7 +19,7 @@ if [ -z "$install_to" ]; then
 fi
 
 if [ -n "$install_to" -a -d "$install_to" ]; then
-    install -v -t "$install_to" pomfclip pomfload uguuload
+    install -v -t "$install_to" pomfclip pomfload uguuload upload
 else
     echo "Nowhere to install to!" >&2
     exit 1

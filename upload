@@ -1,0 +1,107 @@
+#!/bin/sh
+# Script to upload to various sites (delegating to pomfload/uguuload)
+# without having to remember their endpoint URLs and such.
+
+# {{{ Various upload sites/configs
+yapc='yet another pomf clone'
+
+up_uguu=uguuload
+desc_uguu='uguu.se, temporary file hosting'
+
+up_0x0='uguuload --upload https://0x0.st'
+desc_0x0='The Null Pointer, temporary file hosting'
+
+up_maxfile='pomfload --upload https://maxfile.ro/static/upload.php --download https://d.maxfile.ro/'
+desc_maxfile='maxfile.ro, less kawaii file hosting (cloudflare HTTPS)'
+
+up_niggercat='pomfload --upload https://nigger.cat/upload.php --download ""'
+desc_niggercat="nigger.cat, $yapc"
+
+up_1339='pomfload --upload http://1339.cf/upload.php --download http://b.1339.cf/'
+desc_1339="1339.cf, $yapc (no HTTPS)"
+
+up_catgirls='pomfload --upload http://catgirlsare.sexy/upload.php --download ""'
+desc_catgirls="catgirlsare.sexy, $yapc (no HTTPS)"
+
+up_che='pomfload --upload http://up.che.moe/upload.php --download http://cdn.che.moe/'
+desc_che="up.che.moe, $yapc (no HTTPS)"
+
+up_pomfpl='pomfload --upload https://pomf.pl/upload.php --download https://i.pomf.pl/'
+desc_pomfpl="pomf.pl, $yapc (cloudflare HTTPS)"
+
+up_pomfio='pomfload --upload https://pomf.io/upload.php --download ""'
+desc_pomfio="pomf.io, $yapc"
+
+up_hummingbird='pomfload --upload http://pomf.hummingbird.moe/upload.php --download http://a.pomf.hummingbird.moe/'
+desc_hummingbird="pomf.hummingbird.moe, $yapc (no HTTPS)"
+
+up_pomfcat='pomfload --upload https://pomf.cat/upload.php --download https://a.pomf.cat/'
+desc_pomfcat="pomf.cat, $yapc (cloudflare HTTPS)"
+
+up_kyaa='pomfload --upload https://kyaa.sg/upload.php --download https://r.kyaa.sg/'
+desc_kyaa="kyaa.sg, $yapc (cloudflare HTTPS)"
+
+up_comfy='pomfload --upload http://comfy.moe/upload.php --download ""'
+desc_comfy="comfy.moe, $yapc (no HTTPS)"
+
+up_cuntflaps='pomfload --upload http://cuntflaps.me/upload.php --download http://a.cuntflaps.me/'
+desc_cuntflaps="cuntflaps.me, $yapc (no HTTPS)"
+
+up_plebeianparty='pomfload --upload http://files.plebeianparty.com/upload.php --download http://a.plebeianparty.com/'
+desc_plebeianparty="files.plebeianparty.com, $yapc (no HTTPS)"
+
+# TODO: this takes a "file" (like fuwa below) but gives us "files" back (like everything else)
+#up_madokami='pomfload --upload https://madokami.com/upload --download https://madokami.com/'
+#desc_madokami="madokami, $yapc"
+
+# TODO: this one gives us the full URL the first time, and stripped URLs the rest of the time
+#up_mixtape='pomfload --upload https://mixtape.moe/upload.php --download https://my.mixtape.moe/'
+#desc_mixtape="mixtape.moe, $yapc (cloudflare HTTPS)"
+
+# nyanimg is broken
+# http://nyanimg.com/upload.php
+
+# openhost seems broken as fuck
+#up_openhost='pomfload --upload https://openhost.xyz/upload.php --download https://dl.openhost.xyz/'
+#desc_openhost="openhost.xyz, $yapc (cloudflare HTTPS)"
+
+# TODO: Fuwa has an ever so slightly different upload system.
+# It has a "file" parameter (not "files[]"), and it replies with something like:
+# {"file":{"url":"<full URL>","success":true,"name":"<name>"}}
+#up_fuwa='fuwaload --upload https://fuwa.se/api/upload --download ""'
+#desc_fuwa="fuwa.se, $yapc (cloudflare HTTPS)"
+# }}}
+
+services='
+    uguu 0x0 maxfile niggercat 1339 catgirls che pomfpl pomfio hummingbird
+    pomfcat kyaa comfy cuntflaps plebeianparty
+' # BROKEN: madokami mixtape nyanimg openhost fuwa
+
+service=$1
+[ "$#" != 0 ] && shift
+
+is_valid_service() {
+    local service maybe 2>&-
+    service=$1
+    if [ "${service%% *}" != "$service" ] || [ -z "$service" ]; then
+        return 1
+    fi
+    for maybe in $services; do
+        [ "$maybe" = "$service" ] && return 0
+    done
+    return 1
+}
+
+if [ "$service" = list ]; then
+    for service in $services; do
+        eval 'desc=$desc_'"$service"
+        printf '%-15s%s\n' "$service" "$desc"
+    done
+elif ! is_valid_service "$service"; then
+    printf >&2 'Not a service: "%s"\nTry "%s list"\nInvoke like: "%s SERVICE FILE1 [FILE2 ...]"\n' "$service" "${0##*/}" "${0##*/}"
+    exit 1
+else
+    eval 'up=$up_'"$service"
+    eval 'exec '"${up:?}"' "$@"'
+fi
+#vim:fdm=marker

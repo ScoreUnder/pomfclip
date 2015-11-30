@@ -69,26 +69,14 @@ take_lock() {
     flock -n 4
 }
 
-upload=pomfload
-title='Pomf!'
+service=$(shuf -n 1 -e 0x0 uguu)
+title='Pomfclip'
 
 for arg do case $arg in
-    --uguu)
-        upload=uguuload
-        title='Uguu~'
-        ;;
-    --love)
-        upload='pomfload --upload https://img.loveisover.me/upload.php --download http://a.loveisover.me/'
-        title='Love is over!'
-        ;;
-    --0x0)
-        upload='uguuload --upload https://0x0.st'
-        title='The Null Pointer'
-        ;;
+    --service=*) service=${arg#*=};;
     *)
-        echo "Unknown argument passed to $(basename -- "$0")." >&2
-        echo "Try --uguu, --love, --0x0, or nothing." >&2
-        exit 1
+        die error "Unknown argument passed to $(basename -- "$0")." \
+            "Try --service=0x0 (see 'upload list' for all services)."
         ;;
 esac; done
 
@@ -111,7 +99,7 @@ if take_lock; then
     take_screenshot "$file"
     optipng "$file"
 
-    url=$(eval "$upload \"\$file\"" 2>$errorfile) || die warning "Failed to upload screenshot.$(echo;cat "$errorfile")"
+    url=$(upload "$service" "$file" 2>$errorfile) || die warning "Failed to upload screenshot.$(echo;cat "$errorfile")"
 
     printf %s\\n "$url"
 
