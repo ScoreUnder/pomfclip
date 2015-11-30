@@ -1,12 +1,12 @@
 #!/bin/sh
 # Requires jq (https://stedolan.github.io/jq): sudo pacman -S jq
 if [ "$#" -lt 1 ]; then
-    echo "Usage: $(basename -- "$0") [--upload upload-url] [--download download-url-prefix] FILE [FILE...]" >&2
+    echo "Usage: $(basename -- "$0") --upload upload-url [--download download-url-prefix] FILE [FILE...]" >&2
     exit 1
 fi
 
-upload_url=https://pomf.se/upload.php
-download_url=https://a.pomf.se/
+upload_url=
+download_url=
 
 eval "set -- $(getopt -n "$0" -o u:d: -l upload:,download: -- "$@")"
 while [ "$#" != 0 ]; do
@@ -22,7 +22,7 @@ newline='
 
 result=0
 for f do
-    if ! pomf_reply="$(curl -sS --progress-bar -F "files[]=@$f" -- "$upload_url")"; then
+    if ! pomf_reply="$(curl -sS --progress-bar -F "files[]=@$f" -- "${upload_url:?}")"; then
         echo "Failed to upload $f" >&2
         result=1
     else
