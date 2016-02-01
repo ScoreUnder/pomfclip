@@ -97,7 +97,6 @@ if take_lock; then
     errorfile=$(mktemp --tmpdir pomfXXXXXXXX.log)
 
     take_screenshot "$file"
-    optipng "$file"
 
     url=$(upload "$service" "$file" 2>"$errorfile") || die warning "Failed to upload screenshot.$(echo;cat -- "$errorfile")"
 
