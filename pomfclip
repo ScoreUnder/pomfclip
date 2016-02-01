@@ -81,14 +81,11 @@ for arg do case $arg in
 esac; done
 
 if take_lock; then
-    file=""
-    errorfile=""
+    file= errorfile=
     cleanup() {
         code=$?
-        [ -n "$file" ] && rm -f -- "$file"
-        [ -n "$errorfile" ] && rm -f -- "$errorfile"
-        rm -f -- "$lock"
-        trap - EXIT INT HUP QUIT TERM
+        rm -f -- "$file" "$errorfile" "$lock"
+        trap - EXIT
         exit "$code"
     }
     trap cleanup EXIT INT HUP QUIT TERM
