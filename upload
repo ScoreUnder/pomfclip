@@ -51,7 +51,7 @@ up_plebeianparty='pomfload --upload http://files.plebeianparty.com/upload.php --
 desc_plebeianparty="files.plebeianparty.com, $yapc (no HTTPS)"
 
 up_glop='pomfload --upload https://glop.me/upload.php --download https://gateway.glop.me/ipfs/'
-desc_glop='glop.me, $yapc with IPFS backend (cloudflare HTTPS)'
+desc_glop="glop.me, $yapc with IPFS backend (cloudflare HTTPS)"
 
 # TODO: this takes a "file" (like fuwa below) but gives us "files" back (like everything else)
 #up_madokami='pomfload --upload https://madokami.com/upload --download https://madokami.com/'
