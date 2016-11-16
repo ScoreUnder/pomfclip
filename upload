@@ -44,8 +44,8 @@ desc_kyaa="kyaa.sg, $yapc (cloudflare HTTPS)"
 up_comfy='pomfload --upload http://comfy.moe/upload.php --download ""'
 desc_comfy="comfy.moe, $yapc (no HTTPS)"
 
-up_cuntflaps='pomfload --upload http://cuntflaps.me/upload.php --download http://a.cuntflaps.me/'
-desc_cuntflaps="cuntflaps.me, $yapc (no HTTPS)"
+up_cuntflaps='pomfload --upload https://cuntflaps.me/upload.php --download ""'
+desc_cuntflaps="cuntflaps.me, $yapc (HTTPS)"
 
 up_plebeianparty='pomfload --upload http://files.plebeianparty.com/upload.php --download http://a.plebeianparty.com/'
 desc_plebeianparty="files.plebeianparty.com, $yapc (no HTTPS)"
