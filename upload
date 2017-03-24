@@ -5,6 +5,10 @@
 # {{{ Various upload sites/configs
 yapc='yet another pomf clone'
 
+# If you're going to use owo.whats-th.is, you need these
+owo_key='YOUR OWO KEY'
+owo_url='https://owo.whats-th.is/'
+
 up_uguu=uguuload
 desc_uguu='uguu.se, temporary file hosting'
 
@@ -53,6 +57,9 @@ desc_plebeianparty="files.plebeianparty.com, $yapc (no HTTPS)"
 up_glop='pomfload --upload https://glop.me/upload.php --download https://gateway.glop.me/ipfs/'
 desc_glop="glop.me, $yapc with IPFS backend (cloudflare HTTPS)"
 
+up_owo="pomfload --upload https://api.awau.moe/upload/pomf?key=$owo_key --download $owo_url"
+desc_owo="owo.whats-th.is, Custom pomf made in NodeJS (https://github.com/whats-this)"
+
 # TODO: this takes a "file" (like fuwa below) but gives us "files" back (like everything else)
 #up_madokami='pomfload --upload https://madokami.com/upload --download https://madokami.com/'
 #desc_madokami="madokami, $yapc"
@@ -77,7 +84,7 @@ desc_glop="glop.me, $yapc with IPFS backend (cloudflare HTTPS)"
 
 services='
     uguu 0x0 maxfile niggercat 1339 catgirls che pomfpl pomfio hummingbird
-    pomfcat kyaa comfy cuntflaps plebeianparty glop
+    pomfcat kyaa comfy cuntflaps plebeianparty glop owo
 ' # BROKEN: madokami mixtape nyanimg openhost fuwa
 
 service=$1
