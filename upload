@@ -76,8 +76,10 @@ get_service() {
         #     desc="mixtape.moe, $yapc (cloudflare HTTPS)"
         #     ;;
 
-        # nyanimg is broken
-        # http://nyanimg.com/upload.php
+        nyanimg)
+            up='pomfload --redirects --upload-field pictures --upload https://nyanimg.com/upload.php'
+            desc="nyanimg, $yapc (images only, cloudflare HTTPS)"
+            ;;
 
         # TODO: Fuwa has an ever so slightly different upload system.
         # It has a "file" parameter (not "files[]"), and it replies with something like:
@@ -94,9 +96,9 @@ get_service() {
 
 services='
     uguu 0x0 che nya
-    pomfcat safe glop owo
+    pomfcat safe glop owo nyanimg
 '
-# BROKEN: mixtape nyanimg fuwa plebeianparty
+# BROKEN: mixtape fuwa plebeianparty
 # NEEDS ACCOUNT: catgirls kyaa
 
 

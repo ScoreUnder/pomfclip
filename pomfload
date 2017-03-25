@@ -1,31 +1,43 @@
 #!/bin/sh
 # Requires jq (https://stedolan.github.io/jq): sudo pacman -S jq
 usage() {
-    echo "Usage: $(basename -- "$0") --upload upload-url [--download download-url-prefix] [--[no-]progress] [--] FILE [FILE...]" >&2
+    printf %s\\n \
+        "Usage: $(basename -- "$0") [OPTIONS] --upload upload-url [--] FILE [FILES...]" \
+        "Options:" \
+        "  --upload URL          -u     The endpoint to upload to" \
+        "  --download URL        -d     The prefix to add to the URL the server returns" \
+        "  --[no-]progress       -p/-n  [Do not] show a progress indicator" \
+        "  --upload-field FIELD  -f     The form field the server expects the file to be in" \
+        "  --raw-reply           -r     Expect a single URL from the server rather than JSON" \
+        "  --redirects           -R     Expect a redirection from the server rather than JSON" \
+        "  --                           Marks end of options" \
+        >&2
 }
 
 [ "$#" -lt 1 ] && { usage; exit 1; }
 
 if tty > /dev/null; then
-    show_progress=--progress-bar
+    show_progress=true
 else
-    show_progress=
+    show_progress=false
 fi
 
 upload_url=
 download_url=
 upload_field='files[]'
 raw_reply=false
+redirects=false
 
-eval "set -- $(getopt -n "$0" -o u:d:f:rpn -l upload:,download:,upload-field:,raw-reply,progress,no-progress -- "$@")"
+eval "set -- $(getopt -n "$0" -o u:d:f:rRpn -l upload:,download:,upload-field:,raw-reply,redirects,progress,no-progress -- "$@")"
 while [ "$#" != 0 ]; do
     case $1 in
         --upload|-u)      upload_url=$2; shift;;
         --download|-d)    download_url=$2; shift;;
-        --progress|-p)    show_progress=--progress-bar;;
-        --no-progress|-n) show_progress=;;
+        --progress|-p)    show_progress=true;;
+        --no-progress|-n) show_progress=false;;
         --upload-field|-f) upload_field=$2; shift;;
         --raw-reply|-r)   raw_reply=true;;
+        --redirects|-R)   redirects=true;;
         --) break;;
         *) usage; exit 1;;
     esac; shift
@@ -34,9 +46,27 @@ done; shift
 newline='
 '
 
+$redirects && raw_reply=true
+
+send_file() {
+    local f
+    f=$1
+
+    set -- -sS
+
+    if $redirects; then
+        set -- "$@" -w "%{url_effective}" -L -o /dev/null
+    fi
+    if $show_progress; then
+        set -- "$@" --progress-bar
+    fi
+
+    curl "$@" -F "$upload_field=@$f" -- "${upload_url:?}"
+}
+
 result=0
 for f do
-    if ! pomf_reply="$(curl -sS $show_progress -F "$upload_field=@$f" -- "${upload_url:?}")"; then
+    if ! pomf_reply="$(send_file "$f")"; then
         echo "Failed to upload $f" >&2
         printf %s\\n "$url" >&2 # Maybe it contains some error message now?
         result=1
