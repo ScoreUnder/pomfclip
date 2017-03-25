@@ -70,11 +70,10 @@ get_service() {
             desc="owo.whats-th.is, $yapc made in NodeJS <https://github.com/whats-this> (cloudflare & s3 HTTPS; requires registration)"
             ;;
 
-        # TODO: this one gives us the full URL the first time, and stripped URLs the rest of the time
-        # mixtape)
-        #     up='pomfload --upload https://mixtape.moe/upload.php --download https://my.mixtape.moe/'
-        #     desc="mixtape.moe, $yapc (cloudflare HTTPS)"
-        #     ;;
+        mixtape)
+            up='pomfload --upload https://mixtape.moe/upload.php'
+            desc="mixtape.moe, $yapc (cloudflare HTTPS)"
+            ;;
 
         nyanimg)
             up='pomfload --redirects --upload-field pictures --upload https://nyanimg.com/upload.php'
@@ -95,10 +94,10 @@ get_service() {
 # }}}
 
 services='
-    uguu 0x0 che nya
+    uguu 0x0 che nya mixtape
     pomfcat safe glop owo nyanimg
 '
-# BROKEN: mixtape fuwa plebeianparty
+# BROKEN: fuwa plebeianparty
 # NEEDS ACCOUNT: catgirls kyaa
 
 
