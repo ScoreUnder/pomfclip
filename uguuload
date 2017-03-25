@@ -1,2 +1,0 @@
-#!/bin/sh
-exec pomfload -f file -r -u 'https://uguu.se/api.php?d=upload-tool' "$@"

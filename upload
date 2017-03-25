@@ -1,5 +1,5 @@
 #!/bin/sh
-# Script to upload to various sites (delegating to pomfload/uguuload)
+# Script to upload to various sites (delegating to pomfload)
 # without having to remember their endpoint URLs and such.
 
 # {{{ Various upload sites/configs
@@ -14,12 +14,12 @@ get_service() {
 
     case $1 in
         uguu)
-            up=uguuload
+            up='pomfload --upload-field file --raw-reply --upload "https://uguu.se/api.php?d=upload-tool"'
             desc='uguu.se, temporary file hosting'
             ;;
 
         0x0)
-            up='uguuload --upload https://0x0.st'
+            up='pomfload --upload-field file --raw-reply --upload https://0x0.st'
             desc='The Null Pointer, temporary file hosting'
             ;;
 
