@@ -5,11 +5,13 @@
 # {{{ Various upload sites/configs
 yapc='yet another pomf clone'
 
-# If you're going to use owo.whats-th.is, you need these
-owo_key='YOUR OWO KEY'
-owo_url='https://owo.whats-th.is/'
-
 get_service() {
+    complain=
+    while true; do case $1 in
+        --no-complain) complain=--no-complain; shift;;
+        *) break;;
+    esac; done
+
     case $1 in
         uguu)
             up=uguuload
@@ -62,8 +64,10 @@ get_service() {
             ;;
 
         owo)
-            up="pomfload --upload https://api.awau.moe/upload/pomf?key=$owo_key --download $owo_url"
-            desc="owo.whats-th.is, $yapc made in NodeJS (https://github.com/whats-this) (cloudflare & s3 HTTPS)"
+            need_config $complain owo_key='YOUR OWO KEY' owo_download_url='https://owo.whats-th.is/' ||
+                $complain && exit 1
+            up="pomfload --upload $(shell_quote_arg "https://api.awau.moe/upload/pomf?key=$owo_key") --download $(shell_quote_arg "$owo_download_url")"
+            desc="owo.whats-th.is, $yapc made in NodeJS <https://github.com/whats-this> (cloudflare & s3 HTTPS; requires registration)"
             ;;
 
         # TODO: this takes a "file" (like fuwa below) but gives us "files" back (like everything else)
@@ -107,12 +111,91 @@ services='
 # BROKEN: madokami mixtape nyanimg openhost fuwa plebeianparty
 # NEEDS ACCOUNT: catgirls kyaa
 
+
+##### Thus ends the configuration part of the program #####
+
+
+shell_quote_arg() {
+    input=$1
+    output=\'
+    while true; do
+        case $input in
+            (*\'*)
+                output=$output${input%%\'*}\'\\\'\'
+                input=${input#*\'}
+                ;;
+            (*)
+                output=$output$input\'
+                break
+                ;;
+        esac
+    done
+    printf %s\\n "$output"
+}
+
+_already_read_config=false
+need_config() {
+    local wanted_conf failure conf_key conf_example_val
+    conf_dir=${XDG_CONFIG_HOME:=${HOME:?}/.config}/pomfload
+    conf_file=$conf_dir/upload
+
+    complain=true
+    while true; do case $1 in
+        --no-complain) complain=false; shift;;
+        *) break;;
+    esac; done
+
+    if ! $_already_read_config && ! [ -f "$conf_file" ]; then
+        if [ -e "$conf_file" ]; then
+            printf 'There is a non-file at "%s". Please remove it or put it somewhere sensible.\n' \
+                "$conf_file" >&2
+            return 1
+        fi
+
+        mkdir -p -- "$conf_dir"
+        printf '# %s\n' \
+            'pomfload uploader config' \
+            'This is where registration details for websites will go.' \
+            > "$conf_file"
+    else
+        $_already_read_config || . "$conf_file"
+        _already_read_config=true
+    fi
+
+    failure=false
+    for wanted_conf do
+        conf_key=${wanted_conf%%=*}
+        conf_example_val=${wanted_conf#*=}
+
+        if eval "[ \"\${$conf_key:-\$conf_example_val}\" = \"\$conf_example_val\" ]"; then
+            failure=true
+            $complain && printf 'Missing a value for config: %s\n' "$conf_key"
+        fi
+    done
+
+    if $failure; then
+        for wanted_conf do
+            conf_key=${wanted_conf%%=*}
+            conf_val=${wanted_conf#*=}
+            eval "\${$conf_key+:} false" ||
+                printf %s=%s\\n "$conf_key" "$(shell_quote_arg "$conf_val")"
+            eval "$conf_key=\$conf_val"
+        done >> "$conf_file"
+        $complain &&
+            printf 'Please edit the config file by running:\n\t%s %s\n' \
+                "$(shell_quote_arg "${EDITOR:-${VISUAL:-vim}}")" \
+                "$(shell_quote_arg "$conf_file")" \
+                >&2
+    fi
+    ! $failure
+}
+
 service=$1
 [ "$#" != 0 ] && shift
 
 if [ "$service" = list ]; then
     for service in $services; do
-        get_service "$service"
+        get_service --no-complain "$service"
         printf '%-15s%s\n' "$service" "$desc"
     done
 elif ! get_service "$service"; then
