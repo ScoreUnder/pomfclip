@@ -15,38 +15,20 @@ desc_uguu='uguu.se, temporary file hosting'
 up_0x0='uguuload --upload https://0x0.st'
 desc_0x0='The Null Pointer, temporary file hosting'
 
-up_maxfile='pomfload --upload https://maxfile.ro/static/upload.php --download https://d.maxfile.ro/'
-desc_maxfile='maxfile.ro, less kawaii file hosting (cloudflare HTTPS)'
-
-up_niggercat='pomfload --upload https://nigger.cat/upload.php --download ""'
-desc_niggercat="nigger.cat, $yapc"
-
-up_1339='pomfload --upload http://1339.cf/upload.php --download http://b.1339.cf/'
-desc_1339="1339.cf, $yapc (no HTTPS)"
-
 up_catgirls='pomfload --upload http://catgirlsare.sexy/upload.php --download ""'
 desc_catgirls="catgirlsare.sexy, $yapc (no HTTPS)"
 
 up_che='pomfload --upload http://up.che.moe/upload.php --download http://cdn.che.moe/'
 desc_che="up.che.moe, $yapc (no HTTPS)"
 
-up_pomfpl='pomfload --upload https://pomf.pl/upload.php --download https://i.pomf.pl/'
-desc_pomfpl="pomf.pl, $yapc (cloudflare HTTPS)"
-
 up_pomfio='pomfload --upload https://pomf.io/upload.php --download ""'
 desc_pomfio="pomf.io, $yapc"
-
-up_hummingbird='pomfload --upload http://pomf.hummingbird.moe/upload.php --download http://a.pomf.hummingbird.moe/'
-desc_hummingbird="pomf.hummingbird.moe, $yapc (no HTTPS)"
 
 up_pomfcat='pomfload --upload https://pomf.cat/upload.php --download https://a.pomf.cat/'
 desc_pomfcat="pomf.cat, $yapc (cloudflare HTTPS)"
 
 up_kyaa='pomfload --upload https://kyaa.sg/upload.php --download https://r.kyaa.sg/'
 desc_kyaa="kyaa.sg, $yapc (cloudflare HTTPS)"
-
-up_comfy='pomfload --upload http://comfy.moe/upload.php --download ""'
-desc_comfy="comfy.moe, $yapc (no HTTPS)"
 
 up_cuntflaps='pomfload --upload https://cuntflaps.me/upload.php --download ""'
 desc_cuntflaps="cuntflaps.me, $yapc"
@@ -83,9 +65,11 @@ desc_owo="owo.whats-th.is, Custom pomf made in NodeJS (https://github.com/whats-
 # }}}
 
 services='
-    uguu 0x0 maxfile niggercat 1339 catgirls che pomfpl pomfio hummingbird
-    pomfcat kyaa comfy cuntflaps plebeianparty glop owo
-' # BROKEN: madokami mixtape nyanimg openhost fuwa
+    uguu 0x0 che pomfio
+    pomfcat kyaa cuntflaps plebeianparty glop owo
+'
+# BROKEN: madokami mixtape nyanimg openhost fuwa
+# NEEDS ACCOUNT: catgirls
 
 service=$1
 [ "$#" != 0 ] && shift
