@@ -30,8 +30,8 @@ desc_pomfcat="pomf.cat, $yapc (cloudflare HTTPS)"
 up_kyaa='pomfload --upload https://kyaa.sg/upload.php --download https://r.kyaa.sg/'
 desc_kyaa="kyaa.sg, $yapc (cloudflare HTTPS)"
 
-up_cuntflaps='pomfload --upload https://cuntflaps.me/upload.php --download ""'
-desc_cuntflaps="cuntflaps.me, $yapc"
+up_safe='pomfload --upload https://safe.moe/upload.php --download ""'
+desc_safe="safe.moe, $yapc"
 
 up_plebeianparty='pomfload --upload http://files.plebeianparty.com/upload.php --download http://a.plebeianparty.com/'
 desc_plebeianparty="files.plebeianparty.com, $yapc (no HTTPS)"
@@ -66,7 +66,7 @@ desc_owo="owo.whats-th.is, Custom pomf made in NodeJS (https://github.com/whats-
 
 services='
     uguu 0x0 che nya
-    pomfcat cuntflaps plebeianparty glop owo
+    pomfcat safe plebeianparty glop owo
 '
 # BROKEN: madokami mixtape nyanimg openhost fuwa
 # NEEDS ACCOUNT: catgirls kyaa
