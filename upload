@@ -96,6 +96,6 @@ elif ! is_valid_service "$service"; then
     exit 1
 else
     eval 'up=$up_'"$service"
-    eval 'exec '"${up:?}"' "$@"'
+    eval "exec ${up:?}"' "$@"'
 fi
 #vim:fdm=marker
