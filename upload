@@ -9,59 +9,95 @@ yapc='yet another pomf clone'
 owo_key='YOUR OWO KEY'
 owo_url='https://owo.whats-th.is/'
 
-up_uguu=uguuload
-desc_uguu='uguu.se, temporary file hosting'
+get_service() {
+    case $1 in
+        uguu)
+            up=uguuload
+            desc='uguu.se, temporary file hosting'
+            ;;
 
-up_0x0='uguuload --upload https://0x0.st'
-desc_0x0='The Null Pointer, temporary file hosting'
+        0x0)
+            up='uguuload --upload https://0x0.st'
+            desc='The Null Pointer, temporary file hosting'
+            ;;
 
-up_catgirls='pomfload --upload http://catgirlsare.sexy/upload.php --download ""'
-desc_catgirls="catgirlsare.sexy, $yapc (no HTTPS)"
+        catgirls)
+            up='pomfload --upload http://catgirlsare.sexy/upload.php --download ""'
+            desc="catgirlsare.sexy, $yapc (no HTTPS)"
+            ;;
 
-up_che='pomfload --upload http://up.che.moe/upload.php'
-desc_che="up.che.moe, $yapc (no HTTPS)"
+        che)
+            up='pomfload --upload http://up.che.moe/upload.php'
+            desc="up.che.moe, $yapc (no HTTPS)"
+            ;;
 
-up_nya='pomfload --upload https://nya.is/upload --download ""'
-desc_nya="nya.is, $yapc. Buggy (can't handle files without extensions)"
+        nya)
+            up='pomfload --upload https://nya.is/upload --download ""'
+            desc="nya.is, $yapc. Buggy (can't handle files without extensions)"
+            ;;
 
-up_pomfcat='pomfload --upload https://pomf.cat/upload.php --download https://a.pomf.cat/'
-desc_pomfcat="pomf.cat, $yapc (cloudflare HTTPS)"
+        pomfcat)
+            up='pomfload --upload https://pomf.cat/upload.php --download https://a.pomf.cat/'
+            desc="pomf.cat, $yapc (cloudflare HTTPS)"
+            ;;
 
-up_kyaa='pomfload --upload https://kyaa.sg/upload.php --download https://r.kyaa.sg/'
-desc_kyaa="kyaa.sg, $yapc (cloudflare HTTPS)"
+        kyaa)
+            up='pomfload --upload https://kyaa.sg/upload.php --download https://r.kyaa.sg/'
+            desc="kyaa.sg, $yapc (cloudflare HTTPS)"
+            ;;
 
-up_safe='pomfload --upload https://safe.moe/upload.php --download ""'
-desc_safe="safe.moe, $yapc"
+        safe)
+            up='pomfload --upload https://safe.moe/upload.php --download ""'
+            desc="safe.moe, $yapc"
+            ;;
 
-#up_plebeianparty='pomfload --upload http://files.plebeianparty.com/upload.php --download http://a.plebeianparty.com/'
-#desc_plebeianparty="files.plebeianparty.com, $yapc (no HTTPS)"
+        # plebeianparty)
+        #     up='pomfload --upload http://files.plebeianparty.com/upload.php --download http://a.plebeianparty.com/'
+        #     desc="files.plebeianparty.com, $yapc (no HTTPS)"
+        #     ;;
 
-up_glop='pomfload --upload http://glop.me/upload.php --download http://gateway.glop.me/ipfs/'
-desc_glop="glop.me, $yapc with IPFS backend (no HTTPS)"
+        glop)
+            up='pomfload --upload http://glop.me/upload.php --download http://gateway.glop.me/ipfs/'
+            desc="glop.me, $yapc with IPFS backend (no HTTPS)"
+            ;;
 
-up_owo="pomfload --upload https://api.awau.moe/upload/pomf?key=$owo_key --download $owo_url"
-desc_owo="owo.whats-th.is, $yapc made in NodeJS (https://github.com/whats-this) (cloudflare & s3 HTTPS)"
+        owo)
+            up="pomfload --upload https://api.awau.moe/upload/pomf?key=$owo_key --download $owo_url"
+            desc="owo.whats-th.is, $yapc made in NodeJS (https://github.com/whats-this) (cloudflare & s3 HTTPS)"
+            ;;
 
-# TODO: this takes a "file" (like fuwa below) but gives us "files" back (like everything else)
-#up_madokami='pomfload --upload https://madokami.com/upload --download https://madokami.com/'
-#desc_madokami="madokami, $yapc"
+        # TODO: this takes a "file" (like fuwa below) but gives us "files" back (like everything else)
+        # madokami)
+        #     up='pomfload --upload https://madokami.com/upload --download https://madokami.com/'
+        #     desc="madokami, $yapc"
+        #     ;;
 
-# TODO: this one gives us the full URL the first time, and stripped URLs the rest of the time
-#up_mixtape='pomfload --upload https://mixtape.moe/upload.php --download https://my.mixtape.moe/'
-#desc_mixtape="mixtape.moe, $yapc (cloudflare HTTPS)"
+        # TODO: this one gives us the full URL the first time, and stripped URLs the rest of the time
+        # mixtape)
+        #     up='pomfload --upload https://mixtape.moe/upload.php --download https://my.mixtape.moe/'
+        #     desc="mixtape.moe, $yapc (cloudflare HTTPS)"
+        #     ;;
 
-# nyanimg is broken
-# http://nyanimg.com/upload.php
+        # nyanimg is broken
+        # http://nyanimg.com/upload.php
 
-# openhost seems broken as fuck
-#up_openhost='pomfload --upload https://openhost.xyz/upload.php --download https://dl.openhost.xyz/'
-#desc_openhost="openhost.xyz, $yapc (cloudflare HTTPS)"
+        # openhost seems broken as fuck
+        # openhost)
+        #     up='pomfload --upload https://openhost.xyz/upload.php --download https://dl.openhost.xyz/'
+        #     desc="openhost.xyz, $yapc (cloudflare HTTPS)"
+        #     ;;
 
-# TODO: Fuwa has an ever so slightly different upload system.
-# It has a "file" parameter (not "files[]"), and it replies with something like:
-# {"file":{"url":"<full URL>","success":true,"name":"<name>"}}
-#up_fuwa='fuwaload --upload https://fuwa.se/api/upload --download ""'
-#desc_fuwa="fuwa.se, $yapc (cloudflare HTTPS)"
+        # TODO: Fuwa has an ever so slightly different upload system.
+        # It has a "file" parameter (not "files[]"), and it replies with something like:
+        # {"file":{"url":"<full URL>","success":true,"name":"<name>"}}
+        # fuwa)
+        #     up='fuwaload --upload https://fuwa.se/api/upload --download ""'
+        #     desc="fuwa.se, $yapc (cloudflare HTTPS)"
+        #     ;;
+
+        *) return 1;;
+    esac
+}
 # }}}
 
 services='
@@ -74,28 +110,15 @@ services='
 service=$1
 [ "$#" != 0 ] && shift
 
-is_valid_service() {
-    local service maybe 2>&-
-    service=$1
-    if [ "${service%% *}" != "$service" ] || [ -z "$service" ]; then
-        return 1
-    fi
-    for maybe in $services; do
-        [ "$maybe" = "$service" ] && return 0
-    done
-    return 1
-}
-
 if [ "$service" = list ]; then
     for service in $services; do
-        eval 'desc=$desc_'"$service"
+        get_service "$service"
         printf '%-15s%s\n' "$service" "$desc"
     done
-elif ! is_valid_service "$service"; then
+elif ! get_service "$service"; then
     printf >&2 'Not a service: "%s"\nTry "%s list"\nInvoke like: "%s SERVICE FILE1 [FILE2 ...]"\n' "$service" "${0##*/}" "${0##*/}"
     exit 1
 else
-    eval 'up=$up_'"$service"
     eval "exec ${up:?}"' "$@"'
 fi
 #vim:fdm=marker
