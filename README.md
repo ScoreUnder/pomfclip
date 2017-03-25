@@ -20,9 +20,8 @@ Scripts
 -------
 
 * `pomfclip` for taking screenshots and uploading. `pomfclip --service=maxfile`
-* `uguuload` for uploading to uguu-like sites.
 * `pomfload` for uploading to pomf-like sites.
-* `upload` for managing configurations of the above upload scripts. See `upload list`. Syntax is `upload SERVICE FILE1 [FILE2 ...]`
+* `upload` to wrap configurations for pomfload to upload to various sites. See `upload list`. Syntax is `upload SERVICE FILE1 [FILE2 ...]`
 
 Requirements
 ------------
