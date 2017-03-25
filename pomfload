@@ -14,14 +14,18 @@ fi
 
 upload_url=
 download_url=
+upload_field='files[]'
+raw_reply=false
 
-eval "set -- $(getopt -n "$0" -o u:d:pn -l upload:,download:,progress,no-progress -- "$@")"
+eval "set -- $(getopt -n "$0" -o u:d:f:rpn -l upload:,download:,upload-field:,raw-reply,progress,no-progress -- "$@")"
 while [ "$#" != 0 ]; do
     case $1 in
         --upload|-u)      upload_url=$2; shift;;
         --download|-d)    download_url=$2; shift;;
         --progress|-p)    show_progress=--progress-bar;;
         --no-progress|-n) show_progress=;;
+        --upload-field|-f) upload_field=$2; shift;;
+        --raw-reply|-r)   raw_reply=true;;
         --) break;;
         *) usage; exit 1;;
     esac; shift
@@ -32,27 +36,31 @@ newline='
 
 result=0
 for f do
-    if ! pomf_reply="$(curl -sS $show_progress -F "files[]=@$f" -- "${upload_url:?}")"; then
+    if ! pomf_reply="$(curl -sS $show_progress -F "$upload_field=@$f" -- "${upload_url:?}")"; then
         echo "Failed to upload $f" >&2
         printf %s\\n "$url" >&2 # Maybe it contains some error message now?
         result=1
     else
-        if ! pomf_reply_parsed=$(printf %s\\n "$pomf_reply" | jq -r '.success, .error, .files[0].url'); then
-            echo "Failed to parse uploader response to $f" >&2
-            printf "Response:\n%s\n" "$pomf_reply" >&2
-            result=1
-            continue
-        fi
+        if $raw_reply; then
+            pomf_id=$pomf_reply
+        else
+            if ! pomf_reply_parsed=$(printf %s\\n "$pomf_reply" | jq -r '.success, .error, .files[0].url'); then
+                echo "Failed to parse uploader response to $f" >&2
+                printf "Response:\n%s\n" "$pomf_reply" >&2
+                result=1
+                continue
+            fi
 
-        pomf_success=${pomf_reply_parsed%%"$newline"*}; pomf_reply_parsed=${pomf_reply_parsed#*"$newline"}
-        pomf_error_message=${pomf_reply_parsed%%"$newline"*}; pomf_reply_parsed=${pomf_reply_parsed#*"$newline"}
-        pomf_id=$pomf_reply_parsed
+            pomf_success=${pomf_reply_parsed%%"$newline"*}; pomf_reply_parsed=${pomf_reply_parsed#*"$newline"}
+            pomf_error_message=${pomf_reply_parsed%%"$newline"*}; pomf_reply_parsed=${pomf_reply_parsed#*"$newline"}
+            pomf_id=$pomf_reply_parsed
 
-        if [ "$pomf_success" != true ]; then
-            echo "Failed to upload $f" >&2
-            echo "Server error: $pomf_error_message" >&2
-            result=1
-            continue
+            if [ "$pomf_success" != true ]; then
+                echo "Failed to upload $f" >&2
+                echo "Server error: $pomf_error_message" >&2
+                result=1
+                continue
+            fi
         fi
 
         url=$download_url$pomf_id
