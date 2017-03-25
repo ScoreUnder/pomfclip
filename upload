@@ -18,7 +18,7 @@ desc_0x0='The Null Pointer, temporary file hosting'
 up_catgirls='pomfload --upload http://catgirlsare.sexy/upload.php --download ""'
 desc_catgirls="catgirlsare.sexy, $yapc (no HTTPS)"
 
-up_che='pomfload --upload http://up.che.moe/upload.php --download http://cdn.che.moe/'
+up_che='pomfload --upload http://up.che.moe/upload.php'
 desc_che="up.che.moe, $yapc (no HTTPS)"
 
 up_pomfio='pomfload --upload https://pomf.io/upload.php --download ""'
