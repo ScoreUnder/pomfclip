@@ -70,12 +70,6 @@ get_service() {
             desc="owo.whats-th.is, $yapc made in NodeJS <https://github.com/whats-this> (cloudflare & s3 HTTPS; requires registration)"
             ;;
 
-        # TODO: this takes a "file" (like fuwa below) but gives us "files" back (like everything else)
-        # madokami)
-        #     up='pomfload --upload https://madokami.com/upload --download https://madokami.com/'
-        #     desc="madokami, $yapc"
-        #     ;;
-
         # TODO: this one gives us the full URL the first time, and stripped URLs the rest of the time
         # mixtape)
         #     up='pomfload --upload https://mixtape.moe/upload.php --download https://my.mixtape.moe/'
@@ -84,12 +78,6 @@ get_service() {
 
         # nyanimg is broken
         # http://nyanimg.com/upload.php
-
-        # openhost seems broken as fuck
-        # openhost)
-        #     up='pomfload --upload https://openhost.xyz/upload.php --download https://dl.openhost.xyz/'
-        #     desc="openhost.xyz, $yapc (cloudflare HTTPS)"
-        #     ;;
 
         # TODO: Fuwa has an ever so slightly different upload system.
         # It has a "file" parameter (not "files[]"), and it replies with something like:
@@ -108,7 +96,7 @@ services='
     uguu 0x0 che nya
     pomfcat safe glop owo
 '
-# BROKEN: madokami mixtape nyanimg openhost fuwa plebeianparty
+# BROKEN: mixtape nyanimg fuwa plebeianparty
 # NEEDS ACCOUNT: catgirls kyaa
 
 
