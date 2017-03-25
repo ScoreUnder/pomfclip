@@ -46,7 +46,7 @@ take_screenshot() {
         detect_cancelled_selection retry_if_temporary_fail "$SCREENSHOT_TOOL" "$1"
     elif command -v maim >/dev/null 2>&1 &&
          command -v slop >/dev/null 2>&1; then
-        detect_cancelled_selection retry_if_temporary_fail maim -sc 1,0,0,0.8 --hidecursor "$1"
+        detect_cancelled_selection retry_if_temporary_fail maim -s -c 1,0,0,0.8 --hidecursor "$1"
     elif command -v gnome-screenshot >/dev/null 2>&1; then
         retry_if_temporary_fail gnome-screenshot -a -f "$1"
     elif command -v scrot >/dev/null 2>&1; then
