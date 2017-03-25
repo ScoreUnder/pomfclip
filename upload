@@ -66,10 +66,10 @@ desc_owo="owo.whats-th.is, Custom pomf made in NodeJS (https://github.com/whats-
 
 services='
     uguu 0x0 che nya
-    pomfcat kyaa cuntflaps plebeianparty glop owo
+    pomfcat cuntflaps plebeianparty glop owo
 '
 # BROKEN: madokami mixtape nyanimg openhost fuwa
-# NEEDS ACCOUNT: catgirls
+# NEEDS ACCOUNT: catgirls kyaa
 
 service=$1
 [ "$#" != 0 ] && shift
