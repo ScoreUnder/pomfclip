@@ -65,7 +65,7 @@ get_service() {
 
         owo)
             need_config $complain owo_key='YOUR OWO KEY' owo_download_url='https://owo.whats-th.is/ (example, change me)' ||
-                $complain && exit 1
+                { $complain && exit 1; }
             up="pomfload --upload $(shell_quote_arg "https://api.awau.moe/upload/pomf?key=$owo_key") --download $(shell_quote_arg "$owo_download_url")"
             desc="owo.whats-th.is, $yapc made in NodeJS <https://github.com/whats-this> (cloudflare & s3 HTTPS; requires registration)"
             ;;
