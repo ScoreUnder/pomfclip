@@ -21,8 +21,8 @@ desc_catgirls="catgirlsare.sexy, $yapc (no HTTPS)"
 up_che='pomfload --upload http://up.che.moe/upload.php'
 desc_che="up.che.moe, $yapc (no HTTPS)"
 
-up_pomfio='pomfload --upload https://pomf.io/upload.php --download ""'
-desc_pomfio="pomf.io, $yapc"
+up_nya='pomfload --upload https://nya.is/upload --download ""'
+desc_nya="nya.is, $yapc. Buggy (can't handle files without extensions)"
 
 up_pomfcat='pomfload --upload https://pomf.cat/upload.php --download https://a.pomf.cat/'
 desc_pomfcat="pomf.cat, $yapc (cloudflare HTTPS)"
@@ -65,7 +65,7 @@ desc_owo="owo.whats-th.is, Custom pomf made in NodeJS (https://github.com/whats-
 # }}}
 
 services='
-    uguu 0x0 che pomfio
+    uguu 0x0 che nya
     pomfcat kyaa cuntflaps plebeianparty glop owo
 '
 # BROKEN: madokami mixtape nyanimg openhost fuwa
