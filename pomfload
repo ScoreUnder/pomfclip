@@ -1,19 +1,29 @@
 #!/bin/sh
 # Requires jq (https://stedolan.github.io/jq): sudo pacman -S jq
-if [ "$#" -lt 1 ]; then
-    echo "Usage: $(basename -- "$0") --upload upload-url [--download download-url-prefix] FILE [FILE...]" >&2
-    exit 1
+usage() {
+    echo "Usage: $(basename -- "$0") --upload upload-url [--download download-url-prefix] [--[no-]progress] [--] FILE [FILE...]" >&2
+}
+
+[ "$#" -lt 1 ] && { usage; exit 1; }
+
+if tty > /dev/null; then
+    show_progress=--progress-bar
+else
+    show_progress=
 fi
 
 upload_url=
 download_url=
 
-eval "set -- $(getopt -n "$0" -o u:d: -l upload:,download: -- "$@")"
+eval "set -- $(getopt -n "$0" -o u:d:pn -l upload:,download:,progress,no-progress -- "$@")"
 while [ "$#" != 0 ]; do
     case $1 in
-        --download|-d) download_url=$2; shift;;
-        --upload|-u) upload_url=$2; shift;;
+        --upload|-u)      upload_url=$2; shift;;
+        --download|-d)    download_url=$2; shift;;
+        --progress|-p)    show_progress=--progress-bar;;
+        --no-progress|-n) show_progress=;;
         --) break;;
+        *) usage; exit 1;;
     esac; shift
 done; shift
 
@@ -22,8 +32,9 @@ newline='
 
 result=0
 for f do
-    if ! pomf_reply="$(curl -sS --progress-bar -F "files[]=@$f" -- "${upload_url:?}")"; then
+    if ! pomf_reply="$(curl -sS $show_progress -F "files[]=@$f" -- "${upload_url:?}")"; then
         echo "Failed to upload $f" >&2
+        printf %s\\n "$url" >&2 # Maybe it contains some error message now?
         result=1
     else
         if ! pomf_reply_parsed=$(printf %s\\n "$pomf_reply" | jq -r '.success, .error, .files[0].url'); then
@@ -44,10 +55,11 @@ for f do
             continue
         fi
 
-        [ "$#" -gt 1 ] && printf "%s: " "$f"
-
         url=$download_url$pomf_id
-        echo "$url"
+
+        [ "$#" -gt 1 ] && printf "%s: " "$f"
+        printf %s\\n "$url"
+
         printf '%s\t%s\t%s\n' "$(date --rfc-3339=seconds)" "$url" "$f" >> ~/.pomf_history
     fi
 done
