@@ -40,7 +40,7 @@ up_glop='pomfload --upload http://glop.me/upload.php --download http://gateway.g
 desc_glop="glop.me, $yapc with IPFS backend (no HTTPS)"
 
 up_owo="pomfload --upload https://api.awau.moe/upload/pomf?key=$owo_key --download $owo_url"
-desc_owo="owo.whats-th.is, Custom pomf made in NodeJS (https://github.com/whats-this)"
+desc_owo="owo.whats-th.is, $yapc made in NodeJS (https://github.com/whats-this) (cloudflare & s3 HTTPS)"
 
 # TODO: this takes a "file" (like fuwa below) but gives us "files" back (like everything else)
 #up_madokami='pomfload --upload https://madokami.com/upload --download https://madokami.com/'
