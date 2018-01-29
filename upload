@@ -28,15 +28,15 @@ get_service() {
             desc="catgirlsare.sexy, $yapc (no HTTPS)"
             ;;
 
-        che)
-            up='pomfload --upload http://up.che.moe/upload.php'
-            desc="up.che.moe, $yapc (no HTTPS)"
-            ;;
+        # che)
+        #     up='pomfload --upload http://up.che.moe/upload.php'
+        #     desc="up.che.moe, $yapc (no HTTPS)"
+        #     ;;
 
-        nya)
-            up='pomfload --upload https://nya.is/upload --download ""'
-            desc="nya.is, $yapc. Buggy (can't handle files without extensions)"
-            ;;
+        # nya)
+        #     up='pomfload --upload https://nya.is/upload --download ""'
+        #     desc="nya.is, $yapc. Buggy (can't handle files without extensions)"
+        #     ;;
 
         pomfcat)
             up='pomfload --upload https://pomf.cat/upload.php --download https://a.pomf.cat/'
@@ -48,20 +48,20 @@ get_service() {
             desc="kyaa.sg, $yapc (cloudflare HTTPS)"
             ;;
 
-        safe)
-            up='pomfload --upload https://safe.moe/upload.php --download ""'
-            desc="safe.moe, $yapc"
-            ;;
+        # safe)
+        #     up='pomfload --upload https://safe.moe/api/upload --download ""'
+        #     desc="safe.moe, $yapc"
+        #     ;;
 
         # plebeianparty)
         #     up='pomfload --upload http://files.plebeianparty.com/upload.php --download http://a.plebeianparty.com/'
         #     desc="files.plebeianparty.com, $yapc (no HTTPS)"
         #     ;;
 
-        glop)
-            up='pomfload --upload http://glop.me/upload.php --download http://gateway.glop.me/ipfs/'
-            desc="glop.me, $yapc with IPFS backend (no HTTPS)"
-            ;;
+        # glop)
+        #     up='pomfload --upload http://glop.me/upload.php --download http://gateway.glop.me/ipfs/'
+        #     desc="glop.me, $yapc with IPFS backend (no HTTPS)"
+        #     ;;
 
         owo)
             need_config $complain owo_key='YOUR OWO KEY' owo_download_url='https://owo.whats-th.is/ (example, change me)' ||
@@ -75,10 +75,10 @@ get_service() {
             desc="mixtape.moe, $yapc (cloudflare HTTPS)"
             ;;
 
-        nyanimg)
-            up='pomfload --redirects --upload-field pictures --upload https://nyanimg.com/upload.php'
-            desc="nyanimg, $yapc (images only, cloudflare HTTPS)"
-            ;;
+        # nyanimg)
+        #     up='pomfload --redirects --upload-field pictures --upload https://nyanimg.com/upload.php'
+        #     desc="nyanimg, $yapc (images only, cloudflare HTTPS)"
+        #     ;;
 
         # TODO: Fuwa has an ever so slightly different upload system.
         # It has a "file" parameter (not "files[]"), and it replies with something like:
@@ -94,11 +94,12 @@ get_service() {
 # }}}
 
 services='
-    uguu 0x0 che nya mixtape
-    pomfcat safe glop owo nyanimg
+    uguu 0x0 mixtape
+    pomfcat owo
 '
-# BROKEN: fuwa plebeianparty
-# NEEDS ACCOUNT: catgirls kyaa
+# BROKEN: fuwa
+# DEAD: che nya plebeianparty glop nyanimg
+# NEEDS ACCOUNT (not sure of the API here): catgirls kyaa safe
 
 
 ##### Thus ends the configuration part of the program #####
