@@ -40,12 +40,12 @@ get_service() {
 
         pomfcat)
             up='pomfload --upload https://pomf.cat/upload.php --download https://a.pomf.cat/'
-            desc="pomf.cat, $yapc (cloudflare HTTPS)"
+            desc="pomf.cat, $yapc"
             ;;
 
         kyaa)
             up='pomfload --upload https://kyaa.sg/upload.php --download https://r.kyaa.sg/'
-            desc="kyaa.sg, $yapc (cloudflare HTTPS)"
+            desc="kyaa.sg, $yapc"
             ;;
 
         # safe)
@@ -72,7 +72,7 @@ get_service() {
 
         mixtape)
             up='pomfload --upload https://mixtape.moe/upload.php'
-            desc="mixtape.moe, $yapc (cloudflare HTTPS)"
+            desc="mixtape.moe, $yapc"
             ;;
 
         # nyanimg)
