@@ -32,6 +32,7 @@ Requirements
 
 ### For `pomfclip`
 
+* All the requirements of `upload` (and `upload` itself)
 * A screenshot tool (scrot, shutter, etc.)
   * Bear in mind that scrot and imagemagick often leave artifacts on the resultant images
 * (optional) xsel to copy the URL to the clipboard
