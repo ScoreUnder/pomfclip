@@ -76,7 +76,7 @@ get_service() {
             ;;
 
         minifiles)
-            up='pomfload --upload https://minifiles/upload.php --download https://minifiles.net/files/'
+            up='pomfload --upload https://minifiles.net/upload.php --download https://minifiles.net/files/'
             desc="minifiles.net, $yapc"
             ;;
 
@@ -99,7 +99,7 @@ get_service() {
 # }}}
 
 services='
-    uguu 0x0 mixtape
+    uguu 0x0 minifiles mixtape
     pomfcat owo
 '
 # BROKEN: fuwa
