@@ -74,7 +74,7 @@ get_service() {
             up='pomfload --upload https://mixtape.moe/upload.php'
             desc="mixtape.moe, $yapc"
             ;;
-            
+
         minifiles)
             up='pomfload --upload https://minifiles/upload.php --download https://minifiles.net/files/'
             desc="minifiles.net, $yapc"
