@@ -6,9 +6,11 @@
 yapc='yet another pomf clone'
 
 get_service() {
-    complain=
+    local complain_arg complain
+    complain_arg= complain=true
+
     while true; do case $1 in
-        --no-complain) complain=--no-complain; shift;;
+        --no-complain) complain_arg=--no-complain complain=false; shift;;
         *) break;;
     esac; done
 
@@ -64,7 +66,7 @@ get_service() {
         #     ;;
 
         owo)
-            need_config $complain owo_key='YOUR OWO KEY' owo_download_url='https://owo.whats-th.is/ (example, change me)' ||
+            need_config $complain_arg owo_key='YOUR OWO KEY' owo_download_url='https://owo.whats-th.is/ (example, change me)' ||
                 { $complain && exit 1; }
             up="pomfload --upload $(shell_quote_arg "https://api.awau.moe/upload/pomf?key=$owo_key") --download $(shell_quote_arg "$owo_download_url")"
             desc="owo.whats-th.is, $yapc made in NodeJS <https://github.com/whats-this> (cloudflare & s3 HTTPS; requires registration)"
@@ -130,7 +132,7 @@ shell_quote_arg() {
 
 _already_read_config=false
 need_config() {
-    local wanted_conf failure conf_key conf_example_val
+    local wanted_conf failure conf_key conf_example_val complain
     conf_dir=${XDG_CONFIG_HOME:=${HOME:?}/.config}/pomfload
     conf_file=$conf_dir/upload
 
