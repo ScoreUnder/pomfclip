@@ -95,6 +95,12 @@ get_service() {
         #     desc="fuwa.se, $yapc (cloudflare HTTPS)"
         #     ;;
 
+        ratelimited)
+            need_config $complain_arg ratelimited_key='YOUR RATELIMITED KEY' ratelimited_download_url='https://blah.ratelimited.me/ (example, change me)' || { $complain && exit 1; }
+            up="pomfload --upload $(shell_quote_arg "https://api.ratelimited.me/api/upload/pomf?key=$ratelimited_key") --download $(shell_quote_arg "$ratelimited_download_url")"
+            desc="ratelimited.me, $yapc with custom domains (see config file. Cloudflare HTTPS)"
+            ;;
+
         *) return 1;;
     esac
 }
@@ -102,7 +108,7 @@ get_service() {
 
 services='
     uguu 0x0 minifiles mixtape
-    pomfcat owo
+    pomfcat owo ratelimited
 '
 # BROKEN: fuwa
 # DEAD: che nya plebeianparty glop nyanimg
