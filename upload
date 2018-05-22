@@ -107,8 +107,7 @@ get_service() {
 # }}}
 
 services='
-    uguu 0x0 minifiles mixtape
-    pomfcat owo ratelimited
+    0x0 minifiles mixtape owo pomfcat ratelimited uguu
 '
 # BROKEN: fuwa
 # DEAD: che nya plebeianparty glop nyanimg
