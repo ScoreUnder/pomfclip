@@ -5,6 +5,24 @@
 # {{{ Various upload sites/configs
 yapc='yet another pomf clone'
 
+yapc() {
+    up="pomfload --upload https://$1/upload.php"
+    desc="$1, $yapc"
+    shift
+    if [ "$#" -ne 0 ]; then
+        desc="$desc ($*)"
+    fi
+}
+
+yauc() {
+    up="pomfload --upload-field file --raw-reply --upload 'https://$1/api.php?d=upload-tool'"
+    desc="$1, temporary file hosting"
+    shift
+    if [ "$#" -ne 0 ]; then
+        desc="$desc ($*)"
+    fi
+}
+
 get_service() {
     local complain_arg complain
     complain_arg= complain=true
@@ -15,20 +33,17 @@ get_service() {
     esac; done
 
     case $1 in
-        uguu)
-            up='pomfload --upload-field file --raw-reply --upload "https://uguu.se/api.php?d=upload-tool"'
-            desc='uguu.se, temporary file hosting'
-            ;;
+        uguu) yauc uguu.se 24 hours, 100MB;;
 
         0x0)
             up='pomfload --upload-field file --raw-reply --upload https://0x0.st'
-            desc='The Null Pointer, temporary file hosting'
+            desc='The Null Pointer, temporary file hosting (30+ days, 256MB)'
             ;;
 
-        catgirls)
-            up='pomfload --upload http://catgirlsare.sexy/upload.php --download ""'
-            desc="catgirlsare.sexy, $yapc (no HTTPS)"
-            ;;
+        # catgirls)
+        #     up='pomfload --upload http://catgirlsare.sexy/upload.php --download ""'
+        #     desc="catgirlsare.sexy, $yapc (no HTTPS)"
+        #     ;;
 
         # che)
         #     up='pomfload --upload http://up.che.moe/upload.php'
@@ -45,15 +60,12 @@ get_service() {
             desc="pomf.cat, $yapc"
             ;;
 
-        kyaa)
-            up='pomfload --upload https://kyaa.sg/upload.php --download https://r.kyaa.sg/'
-            desc="kyaa.sg, $yapc"
-            ;;
-
-        # safe)
-        #     up='pomfload --upload https://safe.moe/api/upload --download ""'
-        #     desc="safe.moe, $yapc"
+        # kyaa)
+        #     up='pomfload --upload https://kyaa.sg/upload.php --download https://r.kyaa.sg/'
+        #     desc="kyaa.sg, $yapc"
         #     ;;
+
+        safe) yapc safe.moe 300MB;;
 
         # plebeianparty)
         #     up='pomfload --upload http://files.plebeianparty.com/upload.php --download http://a.plebeianparty.com/'
@@ -72,10 +84,7 @@ get_service() {
             desc="owo.whats-th.is, $yapc made in NodeJS <https://github.com/whats-this> (cloudflare & s3 HTTPS; requires registration)"
             ;;
 
-        mixtape)
-            up='pomfload --upload https://mixtape.moe/upload.php'
-            desc="mixtape.moe, $yapc"
-            ;;
+        mixtape) yapc mixtape.moe;;
 
         minifiles)
             up='pomfload --upload https://minifiles.net/upload.php --download https://minifiles.net/files/'
@@ -101,17 +110,49 @@ get_service() {
             desc="ratelimited.me, $yapc with custom domains (see config file. Cloudflare HTTPS)"
             ;;
 
+        pyonpyon) yapc pomf.pyonpyon.moe 50MB;;
+        doko) yapc doko.moe 512MB;;
+        vidgame) yapc vidga.me 100MB;;
+
+        # catbox)
+        #     TODO: needs to post reqtype=fileupload & userhash=
+        #     up='pomfload --upload https://catbox.moe/user/api.php --raw-reply --upload-field fileToUpload'
+        #     desc="catbox.moe, $yapc"
+        #     ;;
+
+        asis)
+            up='pomfload --upload https://up.asis.io/upload.php --download https://dl.asis.io/'
+            desc="up.asis.io, $yapc"
+            ;;
+
+        # teknik)
+        #     # TODO: should scrape deleteUrl or something too
+        #     # TODO: needs fileType=<MIME> & fileExt=.<EXTENSION> & keySize=256 & blockSize=128
+        #     up='pomfload --upload https://u.teknik.io/Action/Upload/Upload --upload-field data'
+        #     desc="teknik.io, $yapc"
+        #     ;;
+
+        cockfile) yauc cockfile.com;;
+        lewd) yauc lewd.se;;
+
+        rokket)
+            up='pomfload --upload https://rokket.space/upload'
+            desc="rokket.space, temporary file hosting (48 hours, 150MB)"
+            ;;
+
         *) return 1;;
     esac
 }
 # }}}
 
 services='
-    0x0 minifiles mixtape owo pomfcat ratelimited uguu
+    0x0 asis cockfile doko lewd minifiles mixtape owo pomfcat pyonpyon
+    ratelimited rokket safe uguu vidgame
 '
 # BROKEN: fuwa
 # DEAD: che nya plebeianparty glop nyanimg
-# NEEDS ACCOUNT (not sure of the API here): catgirls kyaa safe
+# NEEDS ACCOUNT (not sure of the API here): catgirls kyaa pomf.space biyori.moe lithi.io
+# NOT IMPLEMENTED: catbox dbr.ee teknik
 
 
 ##### Thus ends the configuration part of the program #####
