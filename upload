@@ -23,6 +23,43 @@ yauc() {
     fi
 }
 
+ssh_wrap() {
+    ssh_gpg_wrapper=$(command -v ssh-gpg 2>/dev/null)
+    if [ -n "$ssh_gpg_wrapper" ]; then
+        "$ssh_gpg_wrapper" "$@"
+    else
+        "$@"
+    fi
+}
+
+rsync_service_up() {
+    address=$1  # e.g. "server:/srv/www/path/", including trailing slash
+    path=$2     # e.g. "https://my-server.com/path/", including trailing slash
+    upload_file=$3
+
+    base_filename=$(basename -- "$upload_file")
+
+    case $address in
+        *://*) delim=/;;  # rsync://host/path
+        *)     delim=:;;  # host:path
+    esac
+
+    if
+        ssh_wrap rsync -qz --chmod=644 "$upload_file" "$address"
+    then
+        printf '%s%s\n' "$path" "$base_filename"
+    else
+        return 1
+    fi
+}
+
+rsync_service() {
+    up="rsync_service_up $(shell_quote_arg "$1") $(shell_quote_arg "$2")"
+    desc="rsync upload to $1 into $2"
+    shift 2
+    desc="$desc${1:+ ($*)}"
+}
+
 get_service() {
     local complain_arg complain
     complain_arg= complain=true
@@ -134,6 +171,7 @@ get_service() {
 
         cockfile) yauc cockfile.com;;
         lewd) yauc lewd.se;;
+        gurren) rsync_service gurren:/srv/http/a/ https://score.moe/a/;;
 
         # rokket)
         #     up='pomfload --upload https://rokket.space/upload'
@@ -244,6 +282,6 @@ elif ! get_service "$service"; then
     printf >&2 'Not a service: "%s"\nTry "%s list"\nInvoke like: "%s SERVICE FILE1 [FILE2 ...]"\n' "$service" "${0##*/}" "${0##*/}"
     exit 1
 else
-    eval "exec ${up:?}"' "$@"'
+    eval "${up:?}"' "$@"'
 fi
 #vim:fdm=marker
