@@ -81,21 +81,26 @@ for arg do case $arg in
 esac; done
 
 if take_lock; then
-    file= errorfile=
+    tempdir=
     cleanup() {
         code=$?
-        rm -f -- "$file" "$errorfile" "$lock"
+        rm -rf -- "$tempdir" "$lock"
         trap - EXIT
         exit "$code"
     }
     trap cleanup EXIT INT HUP QUIT TERM
 
-    file=$(mktemp --tmpdir pomfXXXXXXXX.png)
-    errorfile=$(mktemp --tmpdir pomfXXXXXXXX.log)
+    tempdir=$(mktemp -d --tmpdir pomfclip.XXXXXX)
+    file=$tempdir/"$(date +%F-%T-%N)-$$-screenshot.png"
+    converted_file=${file%.png}.webp
+    errorfile=$tempdir/error.log
+
+    exec 2>"$errorfile"
 
     take_screenshot "$file"
+    webp-lossless-convert "$file" || converted_file=$file
 
-    url=$(upload "$service" "$file" 2>"$errorfile") || die warning "Failed to upload screenshot.$(echo;cat -- "$errorfile")"
+    url=$(upload "$service" "$converted_file") || die warning "Failed to upload screenshot.$(echo;cat -- "$errorfile")"
 
     printf %s\\n "$url"
 
