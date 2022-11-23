@@ -65,7 +65,7 @@ get_service() {
         #     desc="kyaa.sg, $yapc"
         #     ;;
 
-        safe) yapc safe.moe 300MB;;
+        # safe) yapc safe.moe 300MB;;
 
         # plebeianparty)
         #     up='pomfload --upload http://files.plebeianparty.com/upload.php --download http://a.plebeianparty.com/'
@@ -84,12 +84,12 @@ get_service() {
             desc="owo.whats-th.is, $yapc made in NodeJS <https://github.com/whats-this> (cloudflare & s3 HTTPS; requires registration)"
             ;;
 
-        mixtape) yapc mixtape.moe;;
+        # mixtape) yapc mixtape.moe;;
 
-        minifiles)
-            up='pomfload --upload https://minifiles.net/upload.php --download https://minifiles.net/files/'
-            desc="minifiles.net, $yapc"
-            ;;
+        # minifiles)
+        #     up='pomfload --upload https://minifiles.net/upload.php --download https://minifiles.net/files/'
+        #     desc="minifiles.net, $yapc"
+        #     ;;
 
         # nyanimg)
         #     up='pomfload --redirects --upload-field pictures --upload https://nyanimg.com/upload.php'
@@ -110,9 +110,9 @@ get_service() {
             desc="ratelimited.me, $yapc with custom domains (see config file. Cloudflare HTTPS)"
             ;;
 
-        pyonpyon) yapc pomf.pyonpyon.moe 50MB;;
-        doko) yapc doko.moe 512MB;;
-        vidgame) yapc vidga.me 100MB;;
+        # pyonpyon) yapc pomf.pyonpyon.moe 50MB;;
+        # doko) yapc doko.moe 512MB;;
+        # vidgame) yapc vidga.me 100MB;;
 
         # catbox)
         #     TODO: needs to post reqtype=fileupload & userhash=
@@ -120,10 +120,10 @@ get_service() {
         #     desc="catbox.moe, $yapc"
         #     ;;
 
-        asis)
-            up='pomfload --upload https://up.asis.io/upload.php --download https://dl.asis.io/'
-            desc="up.asis.io, $yapc"
-            ;;
+        # asis)
+        #     up='pomfload --upload https://up.asis.io/upload.php --download https://dl.asis.io/'
+        #     desc="up.asis.io, $yapc"
+        #     ;;
 
         # teknik)
         #     # TODO: should scrape deleteUrl or something too
@@ -135,10 +135,10 @@ get_service() {
         cockfile) yauc cockfile.com;;
         lewd) yauc lewd.se;;
 
-        rokket)
-            up='pomfload --upload https://rokket.space/upload'
-            desc="rokket.space, temporary file hosting (48 hours, 150MB)"
-            ;;
+        # rokket)
+        #     up='pomfload --upload https://rokket.space/upload'
+        #     desc="rokket.space, temporary file hosting (48 hours, 150MB)"
+        #     ;;
 
         *) return 1;;
     esac
@@ -146,8 +146,7 @@ get_service() {
 # }}}
 
 services='
-    0x0 asis cockfile doko lewd minifiles mixtape owo pomfcat pyonpyon
-    ratelimited rokket safe uguu vidgame
+    0x0 cockfile lewd owo pomfcat ratelimited uguu
 '
 # BROKEN: fuwa
 # DEAD: che nya plebeianparty glop nyanimg
